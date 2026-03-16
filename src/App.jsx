@@ -459,7 +459,7 @@ export default function App() {
         </div>
         <div className="about-grid">
           <div className="about-text reveal">
-            <p>I'm a <strong>Data Scientist &amp; Data Engineer</strong> based in Denton, Texas with a M.S. in Business Analytics from the University of North Texas (GPA 3.83). Currently serving as <em>Data Analytics Specialist at Group O</em>, where I build the analytical systems that power enterprise-level decisions.</p>
+            <p>I'm a <strong>Data Scientist &amp; Data Engineer</strong> based in Denton, Texas with a M.S. in Business Analytics from the University of North Texas (GPA 3.83). Currently serving as <em>Data Scientist at Group O</em>, where I build the analytical systems that power enterprise-level decisions.</p>
             <p>My work spans the full data value chain — from architecting <strong>Snowflake schema dimensional models</strong> and <strong>Medallion architecture lakehouses</strong>, to designing <strong>A/B experiments</strong>, building <strong>propensity models</strong>, and delivering <strong>capacity forecasting</strong> systems that directly drive revenue.</p>
             <p>I believe data science isn't just about building models — it's about <em>translating empirical findings into decisions that matter</em>. Every analysis I run has a business question at its core.</p>
           </div>
@@ -490,7 +490,7 @@ export default function App() {
         </div>
         <div className="timeline">
           {[
-            { date:"Jun 2023 — Present", role:"Data Analytics Specialist", company:"Group O · Irving, TX",
+            { date:"Jun 2023 — Present", role:"Data Scientist", company:"Group O · Roanoke, TX",
               desc:"Designed Snowflake schema dimensional models in Microsoft Fabric to unify finance, sales, and inventory datasets. Applied A/B testing and propensity modeling on B2B vs. B2C campaigns that drove $5M+ in annual revenue. Built PySpark-based forecasting models improving accuracy by 30% and anomaly detection reducing fulfillment gaps by 20%.",
               tags:["Microsoft Fabric","PySpark","A/B Testing","Power BI","Snowflake Schema","Forecasting"] },
             { date:"Nov 2020 — Jan 2021", role:"Business Strategist", company:"Filing Rabbit",
