@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Janmejoy Kar — Senior Data Scientist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #0d0d0f;
+      --bg2:       #121217;
+      --bg3:       #18181f;
+      --gold:      #c9a84c;
+      --gold-light:#e8c97a;
+      --gold-dim:  #7a6330;
+      --white:     #f0ede8;
+      --muted:     #7a7875;
+      --border:    rgba(201,168,76,0.15);
+      --border2:   rgba(240,237,232,0.07);
+      --font-display: 'Cinzel', serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* ── Custom cursor ───────────────────────────────────────── */
+    #cursor {
+      position: fixed; width: 10px; height: 10px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s, width 0.2s, height 0.2s, opacity 0.2s;
+    }
+    #cursor-ring {
+      position: fixed; width: 36px; height: 36px;
+      border: 1px solid rgba(201,168,76,0.5); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s cubic-bezier(.25,.46,.45,.94), width 0.3s, height 0.3s;
+    }
+    body:has(a:hover) #cursor { width: 14px; height: 14px; background: var(--gold-light); }
+    body:has(a:hover) #cursor-ring { width: 50px; height: 50px; border-color: var(--gold); }
+
+    /* ── Noise overlay ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9997; opacity: 0.6;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.4rem 4rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(13,13,15,0.85);
+      backdrop-filter: blur(20px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: 0.18em; color: var(--gold);
+      text-decoration: none; text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      letter-spacing: 0.12em; color: var(--muted);
+      text-decoration: none; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ── HERO ────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 8rem 4rem 6rem;
+      position: relative; overflow: hidden;
+    }
+
+    /* Animated grid background */
+    #hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+      animation: gridPulse 8s ease-in-out infinite;
+    }
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* Animated data particles */
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0;
+      animation: float var(--d, 12s) var(--delay, 0s) ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.2; }
+      100% { transform: translateY(-10vh) translateX(var(--dx, 40px)); opacity: 0; }
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 900px; }
+
+    .hero-tag {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      letter-spacing: 0.2em; color: var(--gold);
+      text-transform: uppercase; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .hero-tag::before {
+      content: ''; display: block;
+      width: 40px; height: 1px; background: var(--gold);
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 900; line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    h1 .accent { color: var(--gold); }
+
+    .hero-sub {
+      font-size: 1.15rem; font-weight: 300;
+      color: var(--muted); max-width: 560px;
+      line-height: 1.8; margin-bottom: 3rem;
+    }
+
+    .hero-stats {
+      display: flex; gap: 3rem; margin-bottom: 3.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-item { display: flex; flex-direction: column; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.2rem; font-weight: 700;
+      color: var(--gold); line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.15em; color: var(--muted);
+      text-transform: uppercase; margin-top: 0.3rem;
+    }
+
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      font-family: var(--font-mono); font-size: 0.72rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: none;
+      transition: all 0.25s;
+    }
+    .btn-primary {
+      background: var(--gold); color: var(--bg);
+      font-weight: 500;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.2em; color: var(--muted);
+      text-transform: uppercase; animation: bounce 2s ease-in-out infinite;
+    }
+    .scroll-hint::after {
+      content: ''; display: block;
+      width: 1px; height: 40px; background: linear-gradient(var(--gold), transparent);
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── SECTIONS SHARED ─────────────────────────────────────── */
+    section { padding: 7rem 4rem; }
+    .section-tag {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.2em; color: var(--gold);
+      text-transform: uppercase; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-tag::before {
+      content: ''; display: block;
+      width: 24px; height: 1px; background: var(--gold);
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700; letter-spacing: 0.02em;
+      color: var(--white); margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); max-width: 520px;
+      font-size: 1rem; margin-bottom: 4rem; line-height: 1.8;
+    }
+
+    /* Fade-in on scroll */
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── ABOUT ───────────────────────────────────────────────── */
+    #about { background: var(--bg2); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--muted); font-size: 1rem; line-height: 1.9;
+      margin-bottom: 1.2rem;
+    }
+    .about-text p strong { color: var(--white); font-weight: 500; }
+    .about-text p em { color: var(--gold); font-style: normal; }
+
+    .skills-grid {
+      display: flex; flex-direction: column; gap: 1.2rem;
+    }
+    .skill-row { }
+    .skill-meta {
+      display: flex; justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+    .skill-name {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      letter-spacing: 0.1em; color: var(--white);
+      text-transform: uppercase;
+    }
+    .skill-pct {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: var(--gold-dim);
+    }
+    .skill-bar {
+      height: 2px; background: var(--border2); position: relative; overflow: hidden;
+    }
+    .skill-fill {
+      position: absolute; left: 0; top: 0; height: 100%;
+      background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+      width: 0; transition: width 1.2s cubic-bezier(.25,.46,.45,.94);
+    }
+    .skill-fill.animated { width: var(--pct); }
+
+    /* ── EXPERIENCE ──────────────────────────────────────────── */
+    #experience { background: var(--bg); }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: linear-gradient(var(--gold), transparent);
+    }
+    .timeline-item {
+      position: relative; padding: 0 0 3.5rem 2.5rem;
+    }
+    .timeline-item::before {
+      content: ''; position: absolute;
+      left: -4px; top: 6px;
+      width: 9px; height: 9px;
+      background: var(--gold); border-radius: 50%;
+      box-shadow: 0 0 12px var(--gold);
+    }
+    .tl-date {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.15em; color: var(--gold-dim);
+      text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .tl-role {
+      font-family: var(--font-display); font-size: 1.15rem;
+      font-weight: 600; color: var(--white); margin-bottom: 0.2rem;
+    }
+    .tl-company {
+      font-size: 0.85rem; color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+    .tl-desc {
+      color: var(--muted); font-size: 0.9rem; line-height: 1.8;
+      max-width: 600px;
+    }
+    .tl-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem;
+    }
+    .tag {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--border);
+      color: var(--muted); transition: all 0.2s;
+    }
+    .tag:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── PROJECTS ────────────────────────────────────────────── */
+    #projects { background: var(--bg2); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5px;
+    }
+    .project-card {
+      background: var(--bg3); padding: 2rem;
+      border: 1px solid var(--border2);
+      transition: border-color 0.3s, transform 0.3s, background 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .project-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0); transition: transform 0.4s;
+    }
+    .project-card:hover { border-color: var(--border); transform: translateY(-4px); }
+    .project-card:hover::before { transform: scaleX(1); }
+
+    .project-num {
+      font-family: var(--font-display); font-size: 3.5rem;
+      font-weight: 900; color: var(--border2);
+      line-height: 1; margin-bottom: 1rem;
+      transition: color 0.3s;
+    }
+    .project-card:hover .project-num { color: rgba(201,168,76,0.12); }
+    .project-title {
+      font-family: var(--font-display); font-size: 1rem;
+      font-weight: 600; color: var(--white);
+      margin-bottom: 0.6rem; letter-spacing: 0.04em;
+    }
+    .project-desc {
+      font-size: 0.85rem; color: var(--muted);
+      line-height: 1.7; margin-bottom: 1.2rem;
+    }
+    .project-impact {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--gold); letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+    }
+    .project-link {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--gold); }
+    .project-link::after { content: '→'; }
+
+    /* ── CERTIFICATIONS ──────────────────────────────────────── */
+    #certifications { background: var(--bg); }
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .cert-card {
+      border: 1px solid var(--border2); padding: 1.4rem 1.6rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .cert-card:hover { border-color: var(--border); background: var(--bg2); }
+    .cert-icon {
+      width: 32px; height: 32px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); font-size: 0.9rem;
+      color: var(--gold);
+    }
+    .cert-name {
+      font-size: 0.82rem; color: var(--white);
+      font-weight: 400; line-height: 1.4; margin-bottom: 0.2rem;
+    }
+    .cert-meta {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.1em; color: var(--muted);
+    }
+
+    /* ── CONTACT ─────────────────────────────────────────────── */
+    #contact {
+      background: var(--bg2);
+      text-align: center;
+    }
+    #contact h2 { margin-bottom: 0.5rem; }
+    #contact .section-intro { margin: 0 auto 3rem; text-align: center; }
+
+    .contact-links {
+      display: flex; justify-content: center;
+      gap: 1.5rem; flex-wrap: wrap; margin-bottom: 4rem;
+    }
+    .contact-link {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 1rem 1.8rem;
+      border: 1px solid var(--border2);
+      font-family: var(--font-mono); font-size: 0.72rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: all 0.25s;
+    }
+    .contact-link:hover {
+      border-color: var(--gold); color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .contact-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+    .footer-rule {
+      border: none; border-top: 1px solid var(--border2);
+      margin: 0 auto; max-width: 200px; margin-bottom: 2rem;
+    }
+    .footer-text {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.15em; color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ──────────────────────────────────────────── */
+    .hero-content > * {
+      opacity: 0; transform: translateY(20px);
+      animation: heroIn 0.8s ease forwards;
+    }
+    .hero-tag    { animation-delay: 0.1s; }
+    h1           { animation-delay: 0.25s; }
+    .hero-sub    { animation-delay: 0.4s; }
+    .hero-stats  { animation-delay: 0.55s; }
+    .hero-ctas   { animation-delay: 0.7s; }
+    @keyframes heroIn {
+      to { opacity: 1; transform: none; }
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      .nav-links { gap: 1.5rem; }
+      section { padding: 5rem 2rem; }
+      #hero { padding: 7rem 2rem 5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-stats { gap: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      h1 { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Floating particles -->
+<div class="particle" style="left:10%;--d:14s;--delay:0s;--dx:60px"></div>
+<div class="particle" style="left:25%;--d:18s;--delay:3s;--dx:-40px"></div>
+<div class="particle" style="left:40%;--d:12s;--delay:6s;--dx:80px"></div>
+<div class="particle" style="left:60%;--d:20s;--delay:1s;--dx:-60px"></div>
+<div class="particle" style="left:75%;--d:16s;--delay:4s;--dx:30px"></div>
+<div class="particle" style="left:88%;--d:15s;--delay:8s;--dx:-50px"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">JK</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-tag">Senior Data Scientist &amp; Data Engineer</div>
+    <h1>Janmejoy<br/><span class="accent">Kar</span></h1>
+    <p class="hero-sub">
+      Turning complex datasets into strategic decisions. Specialist in
+      A/B experimentation, capacity forecasting, predictive modeling,
+      and large-scale data engineering across Microsoft Fabric, AWS, and Databricks.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">$5M+</span>
+        <span class="stat-label">Revenue Impact</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">40%</span>
+        <span class="stat-label">Faster Pipelines</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">30%</span>
+        <span class="stat-label">Forecast Accuracy</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">9</span>
+        <span class="stat-label">Certifications</span>
+      </div>
+    </div>
+    <div class="hero-ctas">
+      <a href="#projects" class="btn btn-primary">View My Work</a>
+      <a href="https://www.linkedin.com/in/janmejoy-kar-849756196/" target="_blank" class="btn btn-outline">LinkedIn Profile</a>
+      <a href="https://github.com/janmejoykar1807" target="_blank" class="btn btn-outline">GitHub</a>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <div class="section-tag">About</div>
+    <h2>The Data Mind<br/>Behind the Numbers</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        I'm a <strong>Data Scientist &amp; Data Engineer</strong> based in Denton, Texas with
+        a M.S. in Business Analytics from the University of North Texas (GPA 3.83).
+        Currently serving as <em>Data Analytics Specialist at Group O</em>, where I build
+        the analytical systems that power enterprise-level decisions.
+      </p>
+      <p>
+        My work spans the full data value chain — from architecting <strong>Snowflake schema
+        dimensional models</strong> and <strong>Medallion architecture lakehouses</strong>,
+        to designing <strong>A/B experiments</strong>, building <strong>propensity models</strong>,
+        and delivering <strong>capacity forecasting</strong> systems that directly drive revenue.
+      </p>
+      <p>
+        I believe data science isn't just about building models — it's about
+        <em>translating empirical findings into decisions that matter</em>.
+        Every analysis I run has a business question at its core.
+      </p>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">Python / PySpark</span><span class="skill-pct">95%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:95%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">SQL &amp; Big Data</span><span class="skill-pct">93%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:93%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">A/B Testing &amp; Statistics</span><span class="skill-pct">90%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:90%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">Microsoft Fabric / Azure</span><span class="skill-pct">92%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:92%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">Machine Learning / Scikit-Learn</span><span class="skill-pct">88%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:88%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">Power BI / Tableau</span><span class="skill-pct">90%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:90%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">R &amp; Statistical Modeling</span><span class="skill-pct">82%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:82%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-meta"><span class="skill-name">AWS / Databricks</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal">
+    <div class="section-tag">Experience</div>
+    <h2>Career Timeline</h2>
+    <p class="section-intro">Building data products that move the needle — from internship experiments to enterprise-scale systems.</p>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item reveal">
+      <div class="tl-date">Jun 2023 — Present</div>
+      <div class="tl-role">Data Analytics Specialist</div>
+      <div class="tl-company">Group O · Irving, TX</div>
+      <div class="tl-desc">
+        Designed Snowflake schema dimensional models in Microsoft Fabric to unify finance, sales, and inventory datasets.
+        Applied A/B testing and propensity modeling on B2B vs. B2C campaigns that drove $5M+ in annual revenue.
+        Built PySpark-based forecasting models improving accuracy by 30% and anomaly detection reducing fulfillment gaps by 20%.
+      </div>
+      <div class="tl-tags">
+        <span class="tag">Microsoft Fabric</span>
+        <span class="tag">PySpark</span>
+        <span class="tag">A/B Testing</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">Snowflake Schema</span>
+        <span class="tag">Forecasting</span>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-date">Nov 2020 — Jan 2021</div>
+      <div class="tl-role">Business Strategist</div>
+      <div class="tl-company">Filing Rabbit</div>
+      <div class="tl-desc">
+        Conducted competitive pricing analysis and built data-driven pricing models to attract new clients.
+        Coordinated website redesign initiative improving user experience and engagement.
+      </div>
+      <div class="tl-tags">
+        <span class="tag">Pricing Analytics</span>
+        <span class="tag">Market Research</span>
+        <span class="tag">Strategy</span>
+      </div>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="tl-date">Jun 2020 — Aug 2020</div>
+      <div class="tl-role">Machine Learning Trainee</div>
+      <div class="tl-company">Indian Servers Ltd</div>
+      <div class="tl-desc">
+        Built ML models on benchmark datasets (MNIST, CIFAR-100, Fashion-MNIST, Titanic).
+        Developed object recognition pipelines using Python, OpenCV, and Caffe.
+        Applied CNNs for image classification and prediction tasks.
+      </div>
+      <div class="tl-tags">
+        <span class="tag">CNNs</span>
+        <span class="tag">OpenCV</span>
+        <span class="tag">TensorFlow</span>
+        <span class="tag">Python</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <div class="section-tag">Projects</div>
+    <h2>Selected Work</h2>
+    <p class="section-intro">From clinical biomarker analysis to enterprise capacity planning — projects that demonstrate rigor, impact, and range.</p>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-num">01</div>
+      <div class="project-title">Hepatitis C Prediction</div>
+      <div class="project-desc">Statistical inference and logistic regression on 615-record clinical dataset. Applied z-tests, hypothesis testing, and confidence intervals in both Python and R.</div>
+      <div class="project-impact">Python · R · Scikit-Learn · Statistical Inference</div>
+      <a href="https://github.com/janmejoykar1807/HepatitisC_Project" target="_blank" class="project-link">View on GitHub</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-num">02</div>
+      <div class="project-title">Prepaid Card Campaign Analytics</div>
+      <div class="project-desc">A/B testing and propensity modeling on B2B vs B2C campaign adoption. Translated empirical findings into optimized project structures generating $5M+ revenue impact.</div>
+      <div class="project-impact">$5M+ Revenue · A/B Testing · Propensity Modeling</div>
+      <a href="https://github.com/janmejoykar1807" target="_blank" class="project-link">Group O Project</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-num">03</div>
+      <div class="project-title">Enterprise KPI Dashboard</div>
+      <div class="project-desc">Built capacity forecasting models and anomaly detection logic in PySpark across sales, procurement, inventory, and warehouse data using Microsoft Fabric Medallion architecture.</div>
+      <div class="project-impact">20% Fewer Fulfillment Gaps · 30% Faster Decisions</div>
+      <a href="https://github.com/janmejoykar1807" target="_blank" class="project-link">Group O Project</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-num">04</div>
+      <div class="project-title">Python Data Mining Suite</div>
+      <div class="project-desc">Four end-to-end ML projects: spam detection (SpamBase), airfare regression, baseball salary prediction, and k-means utility clustering — full supervised and unsupervised pipeline.</div>
+      <div class="project-impact">Python · Scikit-Learn · Classification · Clustering</div>
+      <a href="https://github.com/janmejoykar1807/Python_Data_Mining_Projects" target="_blank" class="project-link">View on GitHub</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-num">05</div>
+      <div class="project-title">R Data Mining Projects</div>
+      <div class="project-desc">Time series on Amazon stock prices, insurance regression, SVM-based consumer classification, and text mining with sentiment analysis — all in reproducible R Markdown.</div>
+      <div class="project-impact">R · RMarkdown · NLP · Time Series · SVM</div>
+      <a href="https://github.com/janmejoykar1807/R_Data_Mining_Projects" target="_blank" class="project-link">View on GitHub</a>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-num">06</div>
+      <div class="project-title">Traffic Sign Recognition</div>
+      <div class="project-desc">Published CNN-based neural network with self-learning capability for real-time traffic sign detection. Published in IJCRT, ISSN 2320-2882, Vol. 9, Issue 6.</div>
+      <div class="project-impact">Published Research · CNN · OpenCV · Python</div>
+      <a href="https://github.com/janmejoykar1807" target="_blank" class="project-link">View Publication</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="reveal">
+    <div class="section-tag">Credentials</div>
+    <h2>Certifications</h2>
+    <p class="section-intro">Nine industry certifications across Microsoft Azure, AWS, and data science platforms.</p>
+  </div>
+  <div class="certs-grid">
+    <div class="cert-card reveal">
+      <div class="cert-icon">⊞</div>
+      <div>
+        <div class="cert-name">Microsoft Certified: Power BI Data Analyst Associate</div>
+        <div class="cert-meta">Microsoft · Jun 2025</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⊞</div>
+      <div>
+        <div class="cert-name">Microsoft Certified: Azure Data Scientist Associate</div>
+        <div class="cert-meta">Microsoft · Aug 2024</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⊞</div>
+      <div>
+        <div class="cert-name">Microsoft Certified: Fabric Analytics Engineer Associate</div>
+        <div class="cert-meta">Microsoft · Jul 2024</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⊞</div>
+      <div>
+        <div class="cert-name">Microsoft Certified: Azure Fundamentals</div>
+        <div class="cert-meta">Microsoft · Oct 2023</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⊞</div>
+      <div>
+        <div class="cert-name">Microsoft Azure</div>
+        <div class="cert-meta">Microsoft · Jul 2022</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">◎</div>
+      <div>
+        <div class="cert-name">Python Level 1</div>
+        <div class="cert-meta">Cambridge Certification Authority · Jul 2022</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⬡</div>
+      <div>
+        <div class="cert-name">AWS Cloud Practitioner</div>
+        <div class="cert-meta">Amazon Web Services · Jul 2020</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⬡</div>
+      <div>
+        <div class="cert-name">Architecting on AWS (Associate)</div>
+        <div class="cert-meta">Amazon Web Services · Jun 2020</div>
+      </div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">◈</div>
+      <div>
+        <div class="cert-name">Business Analytics Graduate Digital Badge</div>
+        <div class="cert-meta">IBM · Mar 2021</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <div class="section-tag" style="justify-content:center">Contact</div>
+    <h2>Let's Build Something</h2>
+    <p class="section-intro">
+      Open to Senior Data Scientist, Data Engineer, and Analytics Lead roles.
+      Always happy to connect about data, analytics, or collaboration.
+    </p>
+  </div>
+  <div class="contact-links reveal">
+    <a href="mailto:janmejoykar@my.unt.edu" class="contact-link">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Email Me
+    </a>
+    <a href="https://www.linkedin.com/in/janmejoy-kar-849756196/" target="_blank" class="contact-link">
+      <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://github.com/janmejoykar1807" target="_blank" class="contact-link">
+      <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+      GitHub
+    </a>
+    <a href="https://portfolio-website-ashy-eight.vercel.app" target="_blank" class="contact-link">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      Portfolio
+    </a>
+  </div>
+  <hr class="footer-rule"/>
+  <p class="footer-text">© 2026 Janmejoy Kar · Denton, Texas</p>
+</section>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top  = e.clientY + 'px';
+    }, 60);
+  });
+
+  // Navbar scroll
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Skill bar animation
+  const skillObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+          setTimeout(() => bar.classList.add('animated'), 300);
+        });
+        skillObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.skills-grid').forEach(el => skillObs.observe(el));
+</script>
+</body>
+</html>
